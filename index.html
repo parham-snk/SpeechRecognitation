@@ -1,16 +1,34 @@
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script>
-        function start(){
+        const result = document.getElementById("result");
+        const SpeechRecognition =
+            window.SpeechRecognition || window.webkitSpeechRecognition;
 
+        const recognition = new SpeechRecognition();
+        recognition.lang = "fa-IR";
+        recognition.continuous = false;
+
+        recognition.onresult = (event) => {
+            result.innerText = event.results[0][0].transcript;
+        };
+
+        function start() {
+            recognition.start();
         }
+
+
     </script>
 </head>
+
 <body>
-    <div class="" onclick="start">start</div>
-    <div class="">stop</div>
+    <div class="" onclick="start()">start</div>
+
+    <div id="result"></div>
 </body>
+
 </html>
