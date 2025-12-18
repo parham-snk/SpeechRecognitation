@@ -4,25 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script>
-        const result = document.getElementById("result");
-        const SpeechRecognition =
-            window.SpeechRecognition || window.webkitSpeechRecognition;
 
-        const recognition = new SpeechRecognition();
-        recognition.lang = "fa-IR";
-        recognition.continuous = false;
-
-        recognition.onresult = (event) => {
-            result.innerText = event.results[0][0].transcript;
-        };
-
-        function start() {
-            recognition.start();
-        }
-
-
-    </script>
 </head>
 
 <body>
@@ -30,5 +12,25 @@
 
     <div id="result"></div>
 </body>
+<script>
+    const result = document.getElementById("result");
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "fa-IR";
+    recognition.continuous = false;
+
+    recognition.onresult = (event) => {
+        result.innerText = event.results[0][0].transcript;
+    };
+    recognition.onerror = (err) => { alert(err) }
+
+    function start() {
+        recognition.start();
+    }
+
+
+</script>
 
 </html>
