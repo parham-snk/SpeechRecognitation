@@ -13,24 +13,44 @@
     <div id="result"></div>
 </body>
 <script>
-    const result = document.getElementById("result");
-    const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+    let mediaRecorder;
+    let audioChunks = [];
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = "fa-IR";
-    recognition.continuous = false;
+    const startBtn = document.getElementById("startBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const audioPlayback = document.getElementById("audioPlayback");
 
-    recognition.onresult = (event) => {
-        result.innerText = event.results[0][0].transcript;
-    };
-    recognition.onerror = (err) => { alert(err) }
+    startBtn.addEventListener("click", async () => {
+        // درخواست دسترسی به میکروفون
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-    function start() {
-        recognition.start();
-    }
+        mediaRecorder = new MediaRecorder(stream);
 
+        // هر chunk که آماده شد، ذخیره می‌کنیم
+        mediaRecorder.ondataavailable = (event) => {
+            if (event.data.size > 0) {
+                audioChunks.push(event.data);
+            }
+        };
 
+        // وقتی ضبط متوقف شد، یک فایل صوتی بسازیم
+        mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+            const audioUrl = URL.createObjectURL(audioBlob);
+            audioPlayback.src = audioUrl;
+            audioChunks = []; // پاک کردن chunks برای ضبط بعدی
+        };
+
+        mediaRecorder.start();
+        console.log("ضبط شروع شد");
+    });
+
+    stopBtn.addEventListener("click", () => {
+        if (mediaRecorder && mediaRecorder.state !== "inactive") {
+            mediaRecorder.stop();
+            console.log("ضبط متوقف شد");
+        }
+    });
 </script>
 
 </html>
